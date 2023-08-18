@@ -27,8 +27,22 @@ CommonFunction.prototype.ListByID = function (query, cbk) {
 }
 CommonFunction.prototype.Update = function (query, data, id, cbk) {
     db.query(query, [data, id], function (err, result) {
-        if (err) cbk(err, err)
-        else cbk(err, result)
+        if (err) {
+            cbk(err, err)
+        } else {
+            cbk(err, result)
+        }
+    })
+
+}
+CommonFunction.prototype.Insert = function (query, data, cbk) {
+    db.query(query, [data], function (err, result) {
+        if (err) {
+            cbk(err, err)
+        }
+        else {
+            cbk(err, result)
+        }
     })
 
 }

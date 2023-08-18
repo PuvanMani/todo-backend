@@ -15,6 +15,9 @@ Task.prototype.Chechup = function (req, cbk) {
         case "listbyid":
             self.ListByID(req, cbk)
             break;
+        case "insert":
+            self.Insert(req, cbk)
+            break;
         case "delete":
             self.Delete(req, cbk)
             break;
@@ -29,9 +32,8 @@ Task.prototype.Chechup = function (req, cbk) {
 
 
 Task.prototype.List = function (req, cbk) {
-    console.log(req.headers)
-    const UserId = req.headers.userid
-    const qry = `SELECT * FROM tasktable WHERE UserID=${UserId}`
+    const UserID = req.body.UserID
+    const qry = `SELECT * FROM tasktable WHERE UserID=${UserID}`
     CommonFunction.List(qry, (err, result) => {
         if (err) {
             cbk(err, err)
@@ -56,6 +58,17 @@ Task.prototype.Update = function (req, cbk) {
     const Data = req.body
     const qry = `UPDATE tasktable SET ? WHERE TaskID=?`
     CommonFunction.Update(qry, Data, TaskID, (err, result) => {
+        if (err) {
+            cbk(err, err)
+        } else {
+            cbk(err, result)
+        }
+    })
+}
+Task.prototype.Insert = function (req, cbk) {
+    const Data = req.body
+    const qry = `INSERT INTO tasktable SET ?`
+    CommonFunction.Insert(qry, Data, (err, result) => {
         if (err) {
             cbk(err, err)
         } else {
