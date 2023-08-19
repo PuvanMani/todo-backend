@@ -1,3 +1,5 @@
+const CommonFunction = new (require("../../Module/Common"));
+
 const Auth = new (require("../auth"));
 
 const User = new (require("../../Module/User/userModule"));
@@ -12,6 +14,9 @@ Login.prototype.LoginCheck = function (req, cbk) {
     switch (action) {
         case "login":
             self.LoginAccess(req, cbk)
+            break;
+        case "register":
+            self.Register(req, cbk)
             break;
         default:
             break;
@@ -51,6 +56,36 @@ Login.prototype.LoginAccess = function (req, cbk) {
     })
 }
 
+Login.prototype.Register = function (req, cbk) {
+    User.List(req, (err, result) => {
+        if (err) {
+            cbk(err, err)
+        } else if (result.length > 0) {
+            cbk("Username Aldready Exist", [])
+        } else {
+            Auth.EncryptMyPassword(req.body.Password, (err, hashPass) => {
+                if (err) {
+                    cbk(err, err)
+                } else {
+                    let data = {
+                        Name: req.body.Name,
+                        Email: req.body.Email,
+                        userName: req.body.UserName,
+                        Password: hashPass
+                    }
+                    let qry = "INSERT INTO usertable SET ?"
+                    CommonFunction.Insert(qry, data, (err, response) => {
+                        if (err) {
+                            cbk(err, err)
+                        } else {
+                            cbk(err, response)
+                        }
+                    })
+                }
+            })
 
+        }
+    })
+}
 
 module.exports = Login;
